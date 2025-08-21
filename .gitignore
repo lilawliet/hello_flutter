@@ -20,7 +20,7 @@ migrate_working_dir/
 .idea/
 
 # VS Code 相关文件
-.vscode/
+# .vscode/
 
 # Flutter/Dart/Pub 相关文件
 **/doc/api/
