@@ -1,0 +1,59 @@
+# 杂项文件
+*.class
+*.log
+*.pyc
+*.swp
+*.tmp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ 相关文件
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# VS Code 相关文件
+.vscode/
+
+# Flutter/Dart/Pub 相关文件
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# iOS 相关文件
+ios/Flutter/Flutter.podspec
+ios/Pods/
+ios/Runner.xcworkspace/
+ios/Runner.xcuserdata/
+ios/Flutter/Generated.xcconfig
+
+# Android 相关文件
+android/.gradle/
+android/local.properties
+android/key.properties
+
+# Firebase / 配置文件
+google-services.json
+GoogleService-Info.plist
+
+# 符号化文件
+app.*.symbols
+
+# 混淆文件
+app.*.map.json
+
+# 生成的文件
+*.g.dart
+*.freezed.dart
