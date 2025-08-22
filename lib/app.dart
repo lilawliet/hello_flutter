@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application/routes/RouteUtils.dart';
+import 'package:flutter_application/routes/routes.dart';
 import 'package:flutter_application/screens/home.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
@@ -26,7 +28,9 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
               useMaterial3: true,
             ),
-            home: HomePage(title: 'Home'),
+            navigatorKey: RouteUtils.navigatorKey,
+            onGenerateRoute: Routes.generateRoute,
+            initialRoute: RoutePath.home,
           ),
         );
       },
