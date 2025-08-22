@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application/screens/webview.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -67,7 +68,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _listItemView() {
-    return Container(
+    // InkWell() // 点击的时候水波纹效果
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, 
+        MaterialPageRoute(
+          builder: (context) => WebView(
+          title: '标题',
+          url: 'https://www.baidu.com',
+        )));
+      },
+      child: Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.withOpacity(0.5), width: 0.5.r),
         color: Colors.white,
@@ -137,6 +148,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+    ),
     );
   }
 }
