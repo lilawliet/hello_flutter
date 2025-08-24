@@ -37,6 +37,7 @@ dependencies:
   oktoast: ^3.4.0
   flutter_screenutil: ^5.9.3
   flutter_swiper_view: ^1.1.8
+  dio: ^5.9.0
 
 dev_dependencies:
   flutter_test:

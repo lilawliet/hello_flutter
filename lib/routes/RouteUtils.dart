@@ -20,13 +20,14 @@ class RouteUtils {
     bool maintainState = true,
   }) {
     return Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => page,
-          fullscreenDialog: fullscreenDialog ?? false,
-          settings: settings,
-          maintainState: maintainState,
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (_) => page,
+        fullscreenDialog: fullscreenDialog ?? false,
+        settings: settings,
+        maintainState: maintainState,
+      ),
+    );
   }
 
   ///根据路由路径跳转
@@ -49,7 +50,12 @@ class RouteUtils {
     String name, {
     Object? arguments,
   }) {
-    return Navigator.pushNamedAndRemoveUntil(context, name, (route) => false, arguments: arguments);
+    return Navigator.pushNamedAndRemoveUntil(
+      context,
+      name,
+      (route) => false,
+      arguments: arguments,
+    );
   }
 
   ///清空栈，只留目标页面
@@ -61,18 +67,23 @@ class RouteUtils {
     bool maintainState = true,
   }) {
     return Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(
-          builder: (_) => page,
-          fullscreenDialog: fullscreenDialog ?? false,
-          settings: settings,
-          maintainState: maintainState,
-        ),
-        (route) => false);
+      context,
+      MaterialPageRoute(
+        builder: (_) => page,
+        fullscreenDialog: fullscreenDialog ?? false,
+        settings: settings,
+        maintainState: maintainState,
+      ),
+      (route) => false,
+    );
   }
 
   ///用新的路由替换当路由
-  static Future pushReplacement(BuildContext context, Route route, {Object? result}) {
+  static Future pushReplacement(
+    BuildContext context,
+    Route route, {
+    Object? result,
+  }) {
     return Navigator.pushReplacement(context, route, result: result);
   }
 
@@ -83,7 +94,12 @@ class RouteUtils {
     Object? result,
     Object? arguments,
   }) {
-    return Navigator.pushReplacementNamed(context, name, arguments: arguments, result: result);
+    return Navigator.pushReplacementNamed(
+      context,
+      name,
+      arguments: arguments,
+      result: result,
+    );
   }
 
   ///关闭当前页面

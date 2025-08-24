@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application/datas/home_banner_data.dart';
 import 'package:flutter_application/routes/routes.dart';
-import 'package:flutter_application/screens/webview.dart';
+import 'package:flutter_application/screens/home/view_model.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -14,6 +15,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<HomeBannerDatum>? bannerData;
+
+  @override
+  void initState() {
+    super.initState();
+    initBannerData();
+  }
+
+  void initBannerData() async {
+    bannerData = await HomeViewModel.getBanner();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,12 +57,13 @@ class _HomePageState extends State<HomePage> {
       width: double.infinity,
       height: 150.h,
       child: Swiper(
-        itemCount: 3,
+        itemCount: bannerData?.length ?? 0,
         viewportFraction: 1.0,
         loop: true,
         autoplay: true,
         autoplayDelay: 3000,
         duration: 300,
+        control: const SwiperControl(),
         itemBuilder: (context, index) {
           return Container(
             decoration: BoxDecoration(
@@ -57,16 +72,10 @@ class _HomePageState extends State<HomePage> {
             ),
             margin: const EdgeInsets.symmetric(horizontal: 15),
             width: double.infinity,
-            height: 150,
-            child: Center(
-              child: Text(
-                'Slide ${index + 1}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+            height: 150.h,
+            child: Image.network(
+              bannerData?[index].imagePath ?? '',
+              fit: BoxFit.cover,
             ),
           );
         },
