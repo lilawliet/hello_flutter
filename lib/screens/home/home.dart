@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application/datas/home_banner_data.dart';
+import 'package:flutter_application/datas/home_list_data.dart';
 import 'package:flutter_application/routes/routes.dart';
 import 'package:flutter_application/screens/home/view_model.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -15,37 +17,28 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<HomeBannerDatum>? bannerData;
+  HomeViewModel homeViewModel = HomeViewModel();
 
   @override
   void initState() {
     super.initState();
-    initBannerData();
-  }
-
-  void initBannerData() async {
-    bannerData = await HomeViewModel.getBanner();
-    setState(() {});
+    // 初始化 Dio
+    homeViewModel.initDio();
+    // 获取 banner 数据
+    homeViewModel.getBanner();
+    // 获取 home 列表数据
+    homeViewModel.getHomeList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        // SingleChildScrollView 接管滚动事件，NeverScrollableScrollPhysics 禁止滚动
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              _swiperView(),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return _listItemView();
-                },
-                itemCount: 10,
-              ),
-            ],
+    return ChangeNotifierProvider(
+      create: (context) => homeViewModel,
+      child: Scaffold(
+        body: SafeArea(
+          // SingleChildScrollView 接管滚动事件，NeverScrollableScrollPhysics 禁止滚动
+          child: SingleChildScrollView(
+            child: Column(children: [_swiperView(), _ListView()]),
           ),
         ),
       ),
@@ -53,45 +46,65 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _swiperView() {
-    return SizedBox(
-      width: double.infinity,
-      height: 150.h,
-      child: Swiper(
-        itemCount: bannerData?.length ?? 0,
-        viewportFraction: 1.0,
-        loop: true,
-        autoplay: true,
-        autoplayDelay: 3000,
-        duration: 300,
-        control: const SwiperControl(),
-        itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            margin: const EdgeInsets.symmetric(horizontal: 15),
-            width: double.infinity,
-            height: 150.h,
-            child: Image.network(
-              bannerData?[index].imagePath ?? '',
-              fit: BoxFit.cover,
-            ),
-          );
-        },
-        pagination: const SwiperPagination(),
-      ),
+    return Consumer<HomeViewModel>(
+      builder: (context, vm, child) {
+        // homeviewmodel 的 bannerData 数据变化时，会通知到这个 builder 方法，重新构建 UI
+        return SizedBox(
+          width: double.infinity,
+          height: 150.h,
+          child: Swiper(
+            itemCount: vm.bannerData?.length ?? 0,
+            viewportFraction: 1.0,
+            loop: true,
+            autoplay: true,
+            autoplayDelay: 3000,
+            duration: 300,
+            control: const SwiperControl(),
+            itemBuilder: (context, index) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 15),
+                width: double.infinity,
+                height: 150.h,
+                child: Image.network(
+                  vm.bannerData?[index].imagePath ?? '',
+                  fit: BoxFit.cover,
+                ),
+              );
+            },
+            pagination: const SwiperPagination(),
+          ),
+        );
+      },
     );
   }
 
-  Widget _listItemView() {
+  Widget _ListView() {
+    return Consumer<HomeViewModel>(
+      builder: (context, vm, child) {
+        return ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            return _listItemView(vm.homeListData?[index]);
+          },
+          itemCount: vm.homeListData?.length ?? 0,
+        );
+      },
+    );
+  }
+
+  Widget _listItemView(HomeListDatum? data) {
     // InkWell() // 点击的时候水波纹效果
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(
           context,
           RoutePath.webview,
-          arguments: {'title': '标题1'},
+          arguments: {'title': data?.title, 'url': data?.link},
         );
         // Navigator.push(context,
         // MaterialPageRoute(
@@ -131,14 +144,14 @@ class _HomePageState extends State<HomePage> {
                 ),
                 SizedBox(width: 5.w),
                 Text(
-                  '作者',
+                  data?.shareUser ?? '',
                   style: TextStyle(fontSize: 12.sp, color: Colors.black),
                 ),
                 Expanded(child: SizedBox()),
                 Padding(
                   padding: EdgeInsets.only(right: 5.w),
                   child: Text(
-                    '2025 年 8 月 21 日 18:50:58',
+                    data?.niceShareDate ?? '',
                     style: TextStyle(fontSize: 12.sp, color: Colors.black),
                   ),
                 ),
@@ -158,7 +171,7 @@ class _HomePageState extends State<HomePage> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  '标题标题标题标题标题标题',
+                  data?.title ?? '',
                   style: TextStyle(fontSize: 13.sp, color: Colors.black),
                 ),
               ),
@@ -166,7 +179,7 @@ class _HomePageState extends State<HomePage> {
             Row(
               children: [
                 Text(
-                  '分类',
+                  data?.superChapterName ?? '',
                   style: TextStyle(fontSize: 12.sp, color: Colors.green),
                 ),
                 Expanded(child: SizedBox()),

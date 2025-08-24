@@ -12,6 +12,7 @@ class WebView extends StatefulWidget {
 
 class _WebViewState extends State<WebView> {
   String title = '';
+  String url = '';
 
   @override
   initState() {
@@ -22,6 +23,7 @@ class _WebViewState extends State<WebView> {
       var mArguments = mModalRoute?.settings.arguments;
       if (mArguments != null && mArguments is Map) {
         title = mArguments['title'] as String;
+        url = mArguments['url'] as String;
         setState(() {});
       }
     });

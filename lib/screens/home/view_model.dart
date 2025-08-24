@@ -1,9 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_application/datas/home_banner_data.dart';
+import 'package:flutter_application/datas/home_list_data.dart';
 
-class HomeViewModel {
-  static Future<List<HomeBannerDatum>?> getBanner() async {
-    Dio dio = Dio();
+class HomeViewModel with ChangeNotifier {
+  List<HomeBannerDatum>? bannerData;
+  List<HomeListDatum>? homeListData;
+  Dio dio = Dio();
+
+  void initDio() {
     dio.options = BaseOptions(
       method: 'GET',
       baseUrl: 'https://www.wanandroid.com/',
@@ -11,7 +16,26 @@ class HomeViewModel {
       receiveTimeout: const Duration(seconds: 3),
       sendTimeout: const Duration(seconds: 30),
     );
+  }
 
+  Future getHomeList() async {
+    Response response = await dio.get('article/list/0/json');
+
+    HomeListData homeListData = HomeListData.fromJson(response.data);
+
+    print(homeListData.data!.datas);
+    if (homeListData.data != null &&
+        homeListData.data!.datas != null &&
+        homeListData.data!.datas!.isNotEmpty) {
+      this.homeListData = homeListData.data!.datas;
+    } else {
+      this.homeListData = [];
+    }
+
+    notifyListeners();
+  }
+
+  Future getBanner() async {
     Response response = await dio.get('banner/json');
 
     print(response.data);
@@ -19,15 +43,10 @@ class HomeViewModel {
     HomeBannerData homeBannerData = HomeBannerData.fromJson(response.data);
 
     if (homeBannerData.data != null && homeBannerData.data!.isNotEmpty) {
-      return homeBannerData.data;
+      bannerData = homeBannerData.data;
+    } else {
+      bannerData = [];
     }
-
-    return [];
-
-    // var response = await dio.get('/banner/json');
-    // return response.data;
-
-    // var response = await Dio().get('https://www.baidu.com/s?wd=flutter');
-    // return response.data;
+    notifyListeners();
   }
 }
