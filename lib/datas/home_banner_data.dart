@@ -4,56 +4,33 @@
 
 import 'dart:convert';
 
-HomeBannerData homeBannerDataFromJson(String str) =>
-    HomeBannerData.fromJson(json.decode(str));
+List<HomeBannerDatum> homeBannerDataFromJson(String str) =>
+    List<HomeBannerDatum>.from(
+      json.decode(str).map((x) => HomeBannerDatum.fromJson(x)),
+    );
 
-String homeBannerDataToJson(HomeBannerData data) => json.encode(data.toJson());
-
-class HomeBannerData {
-  final List<HomeBannerDatum>? data;
-  final num? errorCode;
-  final String? errorMsg;
-
-  HomeBannerData({this.data, this.errorCode, this.errorMsg});
-
-  factory HomeBannerData.fromJson(Map<String, dynamic> json) => HomeBannerData(
-    data: json["data"] != null
-        ? List<HomeBannerDatum>.from(
-            (json["data"] as List<dynamic>).map(
-              (x) => HomeBannerDatum.fromJson(x),
-            ),
-          )
-        : null,
-    errorCode: json["errorCode"],
-    errorMsg: json["errorMsg"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "data": data?.map((x) => x.toJson()).toList(),
-    "errorCode": errorCode,
-    "errorMsg": errorMsg,
-  };
-}
+String homeBannerDataToJson(List<HomeBannerDatum> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class HomeBannerDatum {
-  final String? desc;
-  final num? id;
-  final String? imagePath;
-  final num? isVisible;
-  final num? order;
-  final String? title;
-  final num? type;
-  final String? url;
+  String desc;
+  int id;
+  String imagePath;
+  int isVisible;
+  int order;
+  String title;
+  int type;
+  String url;
 
   HomeBannerDatum({
-    this.desc,
-    this.id,
-    this.imagePath,
-    this.isVisible,
-    this.order,
-    this.title,
-    this.type,
-    this.url,
+    required this.desc,
+    required this.id,
+    required this.imagePath,
+    required this.isVisible,
+    required this.order,
+    required this.title,
+    required this.type,
+    required this.url,
   });
 
   factory HomeBannerDatum.fromJson(Map<String, dynamic> json) =>

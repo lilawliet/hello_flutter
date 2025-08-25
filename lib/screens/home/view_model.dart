@@ -2,32 +2,23 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/datas/home_banner_data.dart';
 import 'package:flutter_application/datas/home_list_data.dart';
+import 'package:flutter_application/https/dio_instance.dart';
 
 class HomeViewModel with ChangeNotifier {
   List<HomeBannerDatum>? bannerData;
   List<HomeListDatum>? homeListData;
-  Dio dio = Dio();
-
-  void initDio() {
-    dio.options = BaseOptions(
-      method: 'GET',
-      baseUrl: 'https://www.wanandroid.com/',
-      connectTimeout: const Duration(seconds: 5),
-      receiveTimeout: const Duration(seconds: 3),
-      sendTimeout: const Duration(seconds: 30),
-    );
-  }
 
   Future getHomeList() async {
-    Response response = await dio.get('article/list/0/json');
+    print('getHomeList');
+    Response response = await DioInstance.getInstance().get(
+      'article/list/0/json',
+    );
 
     HomeListData homeListData = HomeListData.fromJson(response.data);
 
-    print(homeListData.data!.datas);
-    if (homeListData.data != null &&
-        homeListData.data!.datas != null &&
-        homeListData.data!.datas!.isNotEmpty) {
-      this.homeListData = homeListData.data!.datas;
+    print(homeListData.datas);
+    if (homeListData.datas != null && homeListData.datas!.isNotEmpty) {
+      this.homeListData = homeListData.datas;
     } else {
       this.homeListData = [];
     }
@@ -36,14 +27,18 @@ class HomeViewModel with ChangeNotifier {
   }
 
   Future getBanner() async {
-    Response response = await dio.get('banner/json');
+    Response response = await DioInstance.getInstance().get('banner/json');
 
     print(response.data);
 
-    HomeBannerData homeBannerData = HomeBannerData.fromJson(response.data);
+    // 由于拦截器已经处理了数据，response.data 已经是解析后的数据
+    // 我们需要直接使用 fromJson 方法而不是 homeBannerDataFromJson
+    List<HomeBannerDatum> homeBannerData = (response.data as List)
+        .map((item) => HomeBannerDatum.fromJson(item))
+        .toList();
 
-    if (homeBannerData.data != null && homeBannerData.data!.isNotEmpty) {
-      bannerData = homeBannerData.data;
+    if (homeBannerData.isNotEmpty) {
+      bannerData = homeBannerData;
     } else {
       bannerData = [];
     }

@@ -22,8 +22,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    // 初始化 Dio
-    homeViewModel.initDio();
     // 获取 banner 数据
     homeViewModel.getBanner();
     // 获取 home 列表数据

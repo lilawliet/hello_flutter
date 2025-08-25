@@ -10,18 +10,6 @@ HomeListData homeListDataFromJson(String str) =>
 String homeListDataToJson(HomeListData data) => json.encode(data.toJson());
 
 class HomeListData {
-  HomeListDataData? data;
-
-  HomeListData({this.data});
-
-  factory HomeListData.fromJson(Map<String, dynamic> json) => HomeListData(
-    data: json["data"] == null ? null : HomeListDataData.fromJson(json["data"]),
-  );
-
-  Map<String, dynamic> toJson() => {"data": data?.toJson()};
-}
-
-class HomeListDataData {
   int? curPage;
   List<HomeListDatum>? datas;
   int? offset;
@@ -30,7 +18,7 @@ class HomeListDataData {
   int? size;
   int? total;
 
-  HomeListDataData({
+  HomeListData({
     this.curPage,
     this.datas,
     this.offset,
@@ -40,20 +28,19 @@ class HomeListDataData {
     this.total,
   });
 
-  factory HomeListDataData.fromJson(Map<String, dynamic> json) =>
-      HomeListDataData(
-        curPage: json["curPage"],
-        datas: json["datas"] == null
-            ? []
-            : List<HomeListDatum>.from(
-                json["datas"]!.map((x) => HomeListDatum.fromJson(x)),
-              ),
-        offset: json["offset"],
-        over: json["over"],
-        pageCount: json["pageCount"],
-        size: json["size"],
-        total: json["total"],
-      );
+  factory HomeListData.fromJson(Map<String, dynamic> json) => HomeListData(
+    curPage: json["curPage"],
+    datas: json["datas"] == null
+        ? []
+        : List<HomeListDatum>.from(
+            json["datas"]!.map((x) => HomeListDatum.fromJson(x)),
+          ),
+    offset: json["offset"],
+    over: json["over"],
+    pageCount: json["pageCount"],
+    size: json["size"],
+    total: json["total"],
+  );
 
   Map<String, dynamic> toJson() => {
     "curPage": curPage,
@@ -98,7 +85,7 @@ class HomeListDatum {
   String? shareUser;
   int? superChapterId;
   String? superChapterName;
-  List<dynamic>? tags;
+  List<Tag>? tags;
   String? title;
   int? type;
   int? userId;
@@ -175,7 +162,7 @@ class HomeListDatum {
     superChapterName: json["superChapterName"],
     tags: json["tags"] == null
         ? []
-        : List<dynamic>.from(json["tags"]!.map((x) => x)),
+        : List<Tag>.from(json["tags"]!.map((x) => Tag.fromJson(x))),
     title: json["title"],
     type: json["type"],
     userId: json["userId"],
@@ -224,54 +211,17 @@ class HomeListDatum {
   };
 }
 
-// enum Author { AUTHOR, EMPTY, FLUFFY, PURPLE }
+class Tag {
+  String? name;
+  String? url;
 
-// final authorValues = EnumValues({
-//   "鸿洋": Author.AUTHOR,
-//   "": Author.EMPTY,
-//   "张鸿洋": Author.FLUFFY,
-//   "谷歌开发者": Author.PURPLE,
-// });
+  Tag({this.name, this.url});
 
-// enum ChapterName { ANDROID, CHAPTER_NAME, EMPTY, PURPLE }
+  factory Tag.fromJson(Map<String, dynamic> json) =>
+      Tag(name: json["name"], url: json["url"]);
 
-// final chapterNameValues = EnumValues({
-//   "Android技术周报": ChapterName.ANDROID,
-//   "鸿洋": ChapterName.CHAPTER_NAME,
-//   "自助": ChapterName.EMPTY,
-//   "谷歌开发者": ChapterName.PURPLE,
-// });
-
-// enum ShareUser { EMPTY, SHARE_USER, WGLLSS }
-
-// final shareUserValues = EnumValues({
-//   "鸿洋": ShareUser.EMPTY,
-//   "": ShareUser.SHARE_USER,
-//   "wgllss": ShareUser.WGLLSS,
-// });
-
-enum Name { EMPTY, NAME, TAB }
-
-// final nameValues = EnumValues({
-//   "公众号": Name.EMPTY,
-//   "技术周报": Name.NAME,
-//   "广场Tab": Name.TAB,
-// });
-
-// class Tag {
-//   Name? name;
-//   String? url;
-
-//   Tag({this.name, this.url});
-
-//   factory Tag.fromJson(Map<String, dynamic> json) =>
-//       Tag(name: json["name"], url: json["url"]);
-
-//   Map<String, dynamic> toJson() => {
-//     "name": name,
-//     "url": url,
-//   };
-// }
+  Map<String, dynamic> toJson() => {"name": name, "url": url};
+}
 
 class EnumValues<T> {
   Map<String, T> map;
