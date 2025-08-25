@@ -1,24 +1,18 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application/datas/home_banner_data.dart';
-import 'package:flutter_application/datas/home_list_data.dart';
-import 'package:flutter_application/https/dio_instance.dart';
+import 'package:flutter_application/repository/api.dart';
+import 'package:flutter_application/repository/datas/home_banner_data.dart';
+import 'package:flutter_application/repository/datas/home_list_data.dart';
 
 class HomeViewModel with ChangeNotifier {
   List<HomeBannerDatum>? bannerData;
   List<HomeListDatum>? homeListData;
 
   Future getHomeList() async {
-    print('getHomeList');
-    Response response = await DioInstance.getInstance().get(
-      'article/list/0/json',
-    );
+    List<HomeListDatum> homeListData = await Api.instance.getHomeList();
 
-    HomeListData homeListData = HomeListData.fromJson(response.data);
-
-    print(homeListData.datas);
-    if (homeListData.datas != null && homeListData.datas!.isNotEmpty) {
-      this.homeListData = homeListData.datas;
+    print(homeListData);
+    if (homeListData.isNotEmpty) {
+      this.homeListData = homeListData;
     } else {
       this.homeListData = [];
     }
@@ -27,16 +21,7 @@ class HomeViewModel with ChangeNotifier {
   }
 
   Future getBanner() async {
-    Response response = await DioInstance.getInstance().get('banner/json');
-
-    print(response.data);
-
-    // 由于拦截器已经处理了数据，response.data 已经是解析后的数据
-    // 我们需要直接使用 fromJson 方法而不是 homeBannerDataFromJson
-    List<HomeBannerDatum> homeBannerData = (response.data as List)
-        .map((item) => HomeBannerDatum.fromJson(item))
-        .toList();
-
+    List<HomeBannerDatum> homeBannerData = await Api.instance.getBanner();
     if (homeBannerData.isNotEmpty) {
       bannerData = homeBannerData;
     } else {
